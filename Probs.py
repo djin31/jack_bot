@@ -1,10 +1,28 @@
 from random import random
+import numpy as np
 def deal(p):
     out=random()
     if out<p:
         return 10
     else:
         return int((out-p)/((1-p)/9))+1
+
+def sim_dealer_full(cards,p):
+    #check if we are in a terminal state
+    res=[0,0,0,0,0,0,0,0]
+    if(1 in cards) and sum(cards)==7:
+        res[0]=1.0
+    elif (1 in cards) and (10 in cards) and len(cards)==2:
+        res[6]=1.0
+    elif 17<=sum(cards)<=21:
+        res[sum(cards)-16]=1.0
+    elif sum(cards)>21:
+        res[-1]=1.0
+    else:
+        #not a terminal state
+        return ((1-p)/9.0) * sum([sim_dealer_full(cards+[i+1],p) for i in range(9)])+ p*sim_dealer_full(cards+[10],p)
+    return np.array(res)
+        
 
 def sim_dealer(start,p,iter=1000):
     res=[0,0,0,0,0,0,0,0]
@@ -29,6 +47,9 @@ def sim_dealer(start,p,iter=1000):
                 cards.append(deal(p))
     k=sum(res)
     return [p*1.0/k for p in res]
+
+def sim_dealer(start,p,iter=1000):
+    return sim_dealer_full([start],p).tolist()
 
 def sim_all(p, iter=1000):
     for i in range(10):
