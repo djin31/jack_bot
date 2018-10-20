@@ -13,21 +13,22 @@ def deal(p):
         return int((out-p)/((1-p)/9))+1
 
 
-def sim_dealer_full(cards, p):
-    # check if we are in a terminal state
-    # 0=soft 17, 1=17,2=18,3=19,4=20,5=21,6=BlackJack,7=Busted
-    res = [0, 0, 0, 0, 0, 0, 0, 0]
-    if(1 in cards) and sum(cards) == 7:
-        res[0] = 1.0
-    elif (1 in cards) and (10 in cards) and len(cards) == 2:
-        res[6] = 1.0
-    elif 17 <= sum(cards) <= 21:
-        res[sum(cards)-16] = 1.0
-    elif sum(cards) > 21:
-        res[-1] = 1.0
+def sim_dealer_full(cards,p):
+    #check if we are in a terminal state
+    res=[0,0,0,0,0,0,0,0]
+    if(1 in cards) and sum(cards)==7:
+        res[0]=1.0
+    elif (1 in cards) and (10 in cards) and len(cards)==2:
+        res[6]=1.0
+    elif 17<=sum(cards)<=21:
+        res[sum(cards)-16]=1.0
+    elif 8<=sum(cards)<=11 and (1 in cards):
+        res[sum(cards)-6]=1.0
+    elif sum(cards)>21:
+        res[-1]=1.0
     else:
-        # not a terminal state
-        return ((1-p)/9.0) * sum([sim_dealer_full(cards+[i+1], p) for i in range(9)]) + p*sim_dealer_full(cards+[10], p)
+        #not a terminal state
+        return ((1-p)/9.0) * sum([sim_dealer_full(cards+[i+1],p) for i in range(9)])+ p*sim_dealer_full(cards+[10],p)
     return np.array(res)
 
 
