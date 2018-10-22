@@ -95,6 +95,20 @@ def sim_mdp(dlr, cards, p, depth=5):
                 split = non_face * sum([sim_mdp(dlr, [cards[0], i+1], p, depth-1)[0]
                                         for i in range(9)]) + p*sim_mdp(dlr, [cards[0], 10], p, depth-1)[0]
                 split = 2*split-1
+        elif len(cards) == 2 and cards[0] == cards[1] and depth < 0:
+             # Check if it is a case of Aces
+            if cards[0] == 1:
+                split = non_face * sum([calc_stand([1, i+1], dlr)
+                                        for i in range(9)]) + p*calc_stand([1, 10], dlr)
+                split = 2*split-1
+            elif cards[0]==10:
+                split = non_face * sum([sim_mdp(dlr, [cards[0], i+1], p, depth)[0]
+                                        for i in range(9)])
+                split = (2*split-1)/(1-2*p)
+            else:
+                split = non_face * sum([sim_mdp(dlr, [cards[0], i+1], p, depth)[0]
+                                        for i in range(9) if i!=(cards[0]-1)]) + p*sim_mdp(dlr, [cards[0], 10], p, depth-1)[0]
+                split = (2*split-1)/(1-2*non_face)
         else:
             split = -1
         return max([(stand, "S"), (hit, "H"), (double, "D"), (split, "P")])
@@ -128,7 +142,7 @@ def get_soft(p, dlr_probs):
             print_string+= sim_mdp(dlr_probs[start-1], [1, mc], p)[1] + " "
         print print_string
     
-def get_pair(p, dlr_probs):
+def get_pair(p, dlr_probs, depth=5):
       
     for mc in range(2, 11):
         print_string =  str(mc) + str(mc) + "\t"
@@ -138,7 +152,7 @@ def get_pair(p, dlr_probs):
                 start = counter
             else:
                 start = 1
-            print_string+= sim_mdp(dlr_probs[start-1], [mc, mc], p)[1] + " "
+            print_string+= sim_mdp(dlr_probs[start-1], [mc, mc], p, depth)[1] + " "
         print print_string
     
     # this is done since we need to output result for ace after the number 2 to 10
@@ -148,7 +162,7 @@ def get_pair(p, dlr_probs):
             start = counter
         else:
             start = 1
-        print_string+= sim_mdp(dlr_probs[start-1], [1, 1], p)[1] + " "
+        print_string+= sim_mdp(dlr_probs[start-1], [1, 1], p, depth)[1] + " "
     print print_string
     
 hard_hands=[[2,3],[2,4],[2,5],[2,6],[2,7],[2,8],[2,9],[3,9],[4,9],[5,9],[6,9],[7,9],[8,9],[5,6,7],[5,6,8],[5,6,9]]
