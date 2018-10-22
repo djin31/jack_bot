@@ -163,3 +163,14 @@ def get_pair(p):
         for mc in range(1, 11):
             print sim_mdp(dlr, [mc, mc], p)[1],
         print "."
+
+hard_hands=[[2,3],[2,4],[2,5],[2,6],[2,7],[2,8],[2,9],[3,9],[4,9],[5,9],[6,9],[7,9],[8,9],[5,6,7],[5,6,8],[5,6,9]]
+
+def get_hard(p):
+    print ". 5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 ."
+    for start in range(1, 11):
+        print ". A 2 3 4 5 6 7 8 9 F".split()[start],
+        dlr = sim_dealer(start, p, 100000)
+        for mc in range(16):
+            print str(sim_mdp(dlr,hard_hands[mc] , p)[1])+" ",
+        print "."
