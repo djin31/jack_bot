@@ -2,8 +2,12 @@
 import probs
 import sys
 
-print "pairs"
-probs.get_pair(float(sys.argv[1]))
-print "soft"
-probs.get_soft(float(sys.argv[1]))
+prob_face = float(sys.argv[1])
+dlr_probs = probs.set_dealer(prob_face)
 
+#use -d flag for debug
+if (sys.argv[-1]=="-d"):
+	print ".\t2 3 4 5 6 7 8 9 F A"
+probs.get_hard(prob_face, dlr_probs)
+probs.get_soft(prob_face, dlr_probs)
+probs.get_pair(prob_face, dlr_probs)

@@ -144,33 +144,58 @@ def get_sim(p, start):
             print sim_mdp(dlr, [i, j], p)[1],
         print "."
 
+# pushed set_dealer to new function to avoid recomputations though not much effect on runtime
+def set_dealer(p):
+    dlr_probs = []
+    for start in range(1,11):
+        dlr_probs.append(sim_dealer(start,p,100000))
+    return dlr_probs
 
-def get_soft(p):
-    print ". A 2 3 4 5 6 7 8 9 F ."
-    for start in range(1, 11):
-        print ". A 2 3 4 5 6 7 8 9 F".split()[start],
-        dlr = sim_dealer(start, p, 100000)
-        for mc in range(1, 11):
-            print sim_mdp(dlr, [1, mc], p)[1],
-        print "."
-
-
-def get_pair(p):
-    print ". A 2 3 4 5 6 7 8 9 F ."
-    for start in range(1, 11):
-        print ". A 2 3 4 5 6 7 8 9 F".split()[start],
-        dlr = sim_dealer(start, p, 100000)
-        for mc in range(1, 11):
-            print sim_mdp(dlr, [mc, mc], p)[1],
-        print "."
-
+def get_soft(p, dlr_probs):  
+    for mc in range(2, 10):
+        print_string =  "A" + str(mc) + "\t"
+        for counter in range(2,12):
+            # this is done since we need to output result for ace after the number 2 to 10
+            if counter<11:
+                start = counter
+            else:
+                start = 1
+            print_string+= sim_mdp(dlr_probs[start-1], [1, mc], p)[1] + " "
+        print print_string
+    
+def get_pair(p, dlr_probs):
+      
+    for mc in range(2, 10):
+        print_string =  str(mc) + str(mc) + "\t"
+        for counter in range(2,12):
+            # this is done since we need to output result for ace after the number 2 to 10
+            if counter<11:
+                start = counter
+            else:
+                start = 1
+            print_string+= sim_mdp(dlr_probs[start-1], [mc, mc], p)[1] + " "
+        print print_string
+    
+    # this is done since we need to output result for ace after the number 2 to 10
+    print_string = "AA\t"
+    for counter in range(2,12):
+        if counter<11:
+            start = counter
+        else:
+            start = 1
+        print_string+= sim_mdp(dlr_probs[start-1], [mc, mc], p)[1] + " "
+    print print_string
+    
 hard_hands=[[2,3],[2,4],[2,5],[2,6],[2,7],[2,8],[2,9],[3,9],[4,9],[5,9],[6,9],[7,9],[8,9],[5,6,7],[5,6,8],[5,6,9]]
 
-def get_hard(p):
-    print ". 5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 ."
-    for start in range(1, 11):
-        print ". A 2 3 4 5 6 7 8 9 F".split()[start],
-        dlr = sim_dealer(start, p, 100000)
-        for mc in range(16):
-            print str(sim_mdp(dlr,hard_hands[mc] , p)[1])+" ",
-        print "."
+def get_hard(p, dlr_probs):    
+    for hard_sum in xrange(5,21):
+        print_string = str(hard_sum)+"\t"
+        for counter in range(2,12):
+            # this is done since we need to output result for ace after the number 2 to 10
+            if counter<11:
+                start = counter
+            else:
+                start = 1            
+            print_string+= str(sim_mdp(dlr_probs[start-1],hard_hands[hard_sum-5] , p)[1])+" "
+        print print_string
