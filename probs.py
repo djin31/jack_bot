@@ -31,32 +31,6 @@ def sim_dealer_full(cards,p):
         return ((1-p)/9.0) * sum([sim_dealer_full(cards+[i+1],p) for i in range(9)])+ p*sim_dealer_full(cards+[10],p)
     return np.array(res)
 
-
-# def sim_dealer(start, p, iter=1000):
-#     res = [0, 0, 0, 0, 0, 0, 0, 0]
-#     for i in range(iter):
-#         cards = [start]
-#         cards.append(deal(p))
-#         while True:
-#             # check for soft 17
-#             if(1 in cards) and sum(cards) == 7:
-#                 res[0] += 1
-#                 break
-#             elif (1 in cards) and (10 in cards) and len(cards) == 2:
-#                 res[6] += 1
-#                 break
-#             elif 17 <= sum(cards) <= 21:
-#                 res[sum(cards)-16] += 1
-#                 break
-#             elif sum(cards) > 21:
-#                 res[-1] += 1
-#                 break
-#             else:
-#                 cards.append(deal(p))
-#     k = sum(res)
-#     return [p*1.0/k for p in res]
-
-
 def sim_dealer(start, p, iter=1000):
     return sim_dealer_full([start], p).tolist()
 
@@ -64,15 +38,6 @@ def sim_dealer(start, p, iter=1000):
 def sim_all(p, iter=1000):
     for i in range(10):
         print i+1, sim_dealer(i+1, p, iter)
-
-
-# def list_banao(iter=100000, steps=1000):
-#     bada_list = []
-#     for i in range(steps):
-#         p = i*1.0/steps
-#         bada_list.append([sim_dealer(s+1, p, iter) for s in range(10)])
-#         print i, "completed"
-#     return bada_list
 
 # returns outcome of standing with current cards
 def calc_stand(cards, dlr):
@@ -165,7 +130,7 @@ def get_soft(p, dlr_probs):
     
 def get_pair(p, dlr_probs):
       
-    for mc in range(2, 10):
+    for mc in range(2, 11):
         print_string =  str(mc) + str(mc) + "\t"
         for counter in range(2,12):
             # this is done since we need to output result for ace after the number 2 to 10
@@ -183,7 +148,7 @@ def get_pair(p, dlr_probs):
             start = counter
         else:
             start = 1
-        print_string+= sim_mdp(dlr_probs[start-1], [mc, mc], p)[1] + " "
+        print_string+= sim_mdp(dlr_probs[start-1], [1, 1], p)[1] + " "
     print print_string
     
 hard_hands=[[2,3],[2,4],[2,5],[2,6],[2,7],[2,8],[2,9],[3,9],[4,9],[5,9],[6,9],[7,9],[8,9],[5,6,7],[5,6,8],[5,6,9]]
