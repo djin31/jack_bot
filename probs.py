@@ -104,11 +104,11 @@ def sim_mdp(dlr, cards, p, depth=5):
             elif cards[0]==10:
                 split = non_face * sum([sim_mdp(dlr, [cards[0], i+1], p, depth)[0]
                                         for i in range(9)])
-                split = (2*split-1)/(1-2*p)
+                split = 2*split/(1-p)-1
             else:
                 split = non_face * sum([sim_mdp(dlr, [cards[0], i+1], p, depth)[0]
                                         for i in range(9) if i!=(cards[0]-1)]) + p*sim_mdp(dlr, [cards[0], 10], p, depth-1)[0]
-                split = (2*split-1)/(1-2*non_face)
+                split = 2*split/(1-non_face)-1
         else:
             split = -1
         return max([(stand, "S"), (hit, "H"), (double, "D"), (split, "P")])
@@ -152,7 +152,7 @@ def get_pair(p, dlr_probs, depth=5):
                 start = counter
             else:
                 start = 1
-            print_string+= sim_mdp(dlr_probs[start-1], [mc, mc], p, depth)[1] + " "
+            print_string+= sim_mdp(dlr_probs[start-1], [mc, mc], p, -1)[1] + " "
         print print_string
     
     # this is done since we need to output result for ace after the number 2 to 10
@@ -162,7 +162,7 @@ def get_pair(p, dlr_probs, depth=5):
             start = counter
         else:
             start = 1
-        print_string+= sim_mdp(dlr_probs[start-1], [1, 1], p, depth)[1] + " "
+        print_string+= sim_mdp(dlr_probs[start-1], [1, 1], p, -1)[1] + " "
     print print_string
     
 hard_hands=[[2,3],[2,4],[2,5],[2,6],[2,7],[2,8],[2,9],[3,9],[4,9],[5,9],[6,9],[7,9],[8,9],[5,6,7],[5,6,8],[5,6,9]]
