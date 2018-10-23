@@ -1,2 +1,2 @@
 #!/bin/bash
-python jack_bot.py $1
+python jack_bot.py $1 > Policy.txt

@@ -104,11 +104,11 @@ def sim_mdp(dlr, cards, p, depth=5):
             elif cards[0]==10:
                 split = non_face * sum([sim_mdp(dlr, [cards[0], i+1], p, depth)[0]
                                         for i in range(9)])
-                split = 2*split/(1-p)-1
+                split = (2*split-1)/(1-2*p)
             else:
                 split = non_face * sum([sim_mdp(dlr, [cards[0], i+1], p, depth)[0]
                                         for i in range(9) if i!=(cards[0]-1)]) + p*sim_mdp(dlr, [cards[0], 10], p, depth-1)[0]
-                split = 2*split/(1-non_face)-1
+                split = (2*split-1)/(1-2*non_face)
         else:
             split = -1
         return max([(stand, "S"), (hit, "H"), (double, "D"), (split, "P")])

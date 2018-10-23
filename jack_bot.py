@@ -2,7 +2,7 @@
 import probs
 import sys
 
-prob_face = float(sys.argv[1])
+prob_face = min(float(sys.argv[1]), 0.499)
 dlr_probs = probs.set_dealer(prob_face)
 
 #use -d flag for debug
