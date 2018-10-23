@@ -89,7 +89,7 @@ def sim_mdp(dlr, cards, p, depth=5):
             # Check if it is a case of Aces
             if cards[0] == 1:
                 split = non_face * sum([calc_stand([1, i+1], dlr)
-                                        for i in range(9)]) + p*calc_stand([1, 10], dlr)
+                                        for i in range(9)]) + p*calc_stand([1, 2, 8], dlr)
                 split = 2*split-1
             else:
                 split = non_face * sum([sim_mdp(dlr, [cards[0], i+1], p, depth-1)[0]
@@ -99,7 +99,7 @@ def sim_mdp(dlr, cards, p, depth=5):
              # Check if it is a case of Aces
             if cards[0] == 1:
                 split = non_face * sum([calc_stand([1, i+1], dlr)
-                                        for i in range(9)]) + p*calc_stand([1, 10], dlr)
+                                        for i in range(9)]) + p*calc_stand([1, 2, 8], dlr)
                 split = 2*split-1
             elif cards[0]==10:
                 split = non_face * sum([sim_mdp(dlr, [cards[0], i+1], p, depth)[0]
