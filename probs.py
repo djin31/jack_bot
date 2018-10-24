@@ -163,12 +163,12 @@ def get_pair(p, dlr_probs, depth=5):
         else:
             start = 1
         print_string+= sim_mdp(dlr_probs[start-1], [1, 1], p, -1)[1] + " "
-    print print_string
+    print print_string,
     
 hard_hands=[[2,3],[2,4],[2,5],[2,6],[2,7],[2,8],[2,9],[3,9],[4,9],[5,9],[6,9],[7,9],[8,9],[5,6,7],[5,6,8],[5,6,9]]
 
 def get_hard(p, dlr_probs):    
-    for hard_sum in xrange(5,21):
+    for hard_sum in xrange(5,20):
         print_string = str(hard_sum)+"\t"
         for counter in range(2,12):
             # this is done since we need to output result for ace after the number 2 to 10
