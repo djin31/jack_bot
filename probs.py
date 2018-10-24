@@ -1,18 +1,12 @@
 #!/usr/bin/python
 
-from random import random
-import numpy as np
 import sys
 
-
-def deal(p):
-    out = random()
-    if out < p:
-        return 10
-    else:
-        return int((out-p)/((1-p)/9))+1
-
-
+known={}
+def refresh():
+    global known
+    known={}
+    
 def sim_dealer_full(cards,p):
     #check if we are in a terminal state
     res=[0,0,0,0,0,0,0,0]
@@ -28,16 +22,11 @@ def sim_dealer_full(cards,p):
         res[-1]=1.0
     else:
         #not a terminal state
-        return ((1-p)/9.0) * sum([sim_dealer_full(cards+[i+1],p) for i in range(9)])+ p*sim_dealer_full(cards+[10],p)
-    return np.array(res)
+        return [((1-p)/9.0) * k + p * l for k,l in zip(reduce(lambda a,b:[p+q for p,q in zip(a,b)],[sim_dealer_full(cards+[i+1],p) for i in range(9)]),sim_dealer_full(cards+[10],p))]
+    return res
 
 def sim_dealer(start, p, iter=1000):
-    return sim_dealer_full([start], p).tolist()
-
-
-def sim_all(p, iter=1000):
-    for i in range(10):
-        print i+1, sim_dealer(i+1, p, iter)
+    return sim_dealer_full([start], p)
 
 # returns outcome of standing with current cards
 def calc_stand(cards, dlr):
@@ -61,6 +50,9 @@ def sim_mdp(dlr, cards, p, depth=5):
     # check some base cases
     # dlr has dealers result probability
     # 0=soft 17, 1=17,2=18,3=19,4=20,5=21,6=BlackJack,7=Busted
+    global known
+    if tuple(sorted(dlr)+sorted(cards)+[p]) in known:
+        return known[tuple(sorted(dlr)+sorted(cards)+[p])]
     total = sum(cards)
     if total > 21:
         # busted
@@ -111,6 +103,7 @@ def sim_mdp(dlr, cards, p, depth=5):
                 split = (2*split-1)/(1-2*non_face)
         else:
             split = -1
+        known[tuple(sorted(dlr)+sorted(cards)+[p])]=max([(stand, "S"), (hit, "H"), (double, "D"), (split, "P")])
         return max([(stand, "S"), (hit, "H"), (double, "D"), (split, "P")])
 
 
